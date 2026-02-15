@@ -50,13 +50,10 @@ export function Header() {
           {isAdmin && (
             <Link
               to="/admin"
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
-                location.pathname === "/admin" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-              )}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
             >
               <Shield className="w-4 h-4" />
-              Admin
+              Admin Dashboard
             </Link>
           )}
         </nav>
@@ -119,7 +116,7 @@ export function Header() {
           {isAdmin && (
             <Link to="/admin" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-secondary">
               <Shield className="w-4 h-4" />
-              Admin
+              Admin Dashboard
             </Link>
           )}
           {user ? (

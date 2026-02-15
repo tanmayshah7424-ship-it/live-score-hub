@@ -3,6 +3,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { LogIn, UserPlus, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -18,11 +21,28 @@ const Login = () => {
     setError("");
     setLoading(true);
     const { error } = await signIn(email, password);
-    setLoading(false);
     if (error) {
+      setLoading(false);
       setError(error.message);
     } else {
-      navigate("/");
+      // Check for admin role
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "admin")
+          .maybeSingle();
+
+        if (roleData) {
+          navigate("/admin");
+        } else {
+          navigate("/dashboard");
+        }
+      } else {
+        navigate("/dashboard");
+      }
     }
   };
 
@@ -81,6 +101,8 @@ const Login = () => {
             Don't have an account?{" "}
             <Link to="/register" className="text-primary hover:underline">Sign Up</Link>
           </p>
+
+
         </div>
       </main>
     </div>
