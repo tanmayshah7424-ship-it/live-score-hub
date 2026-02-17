@@ -1,0 +1,26 @@
+{
+    "name": "scorehub-server",
+    "version": "1.0.0",
+    "description": "ScoreHub Live - Backend API Server",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "node --watch server.js",
+        "seed": "node seeds/seed.js"
+    },
+    "dependencies": {
+        "axios": "^1.13.5",
+        "bcryptjs": "^2.4.3",
+        "cheerio": "^1.2.0",
+        "cors": "^2.8.5",
+        "crypto": "^1.0.1",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.0",
+        "express-validator": "^7.2.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.7.0",
+        "nodemailer": "^8.0.1",
+        "socket.io": "^4.7.5",
+        "tabletojson": "^4.1.8"
+    }
+}
