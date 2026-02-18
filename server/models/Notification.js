@@ -8,6 +8,7 @@ const notificationSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // For user-specific notifications
     matchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Match' }, // For match notifications
     readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Track users who read it
+    deletedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Track users who deleted it
     broadcast: { type: Boolean, default: false }, // System-wide notifications
 }, { timestamps: true });
 

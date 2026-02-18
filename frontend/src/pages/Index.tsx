@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trophy } from "lucide-react";
+import { Trophy, Clock } from "lucide-react";
 
 interface TeamRef {
   _id: string;
@@ -64,7 +64,7 @@ const Index = () => {
   const MatchCard = ({ match }: { match: Match }) => (
     <div
       onClick={() => navigate(`/match/${match._id}`)}
-      className="card-glass rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:glow group animate-slide-up relative overflow-hidden"
+      className="card-glass rounded-xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group animate-slide-up relative overflow-hidden"
     >
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full pointer-events-none" />
 
@@ -81,19 +81,19 @@ const Index = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between group-hover:translate-x-1 transition-transform gap-4">
           <div className="flex items-center gap-4 flex-1 min-w-0">
-            <span className="text-4xl filter drop-shadow-lg shrink-0">{match.teamA?.logo}</span>
-            <span className="font-bold text-lg tracking-tight truncate">{match.teamA?.shortName}</span>
+            <span className="text-4xl filter drop-shadow-md shrink-0">{match.teamA?.logo}</span>
+            <span className="font-semibold text-lg tracking-tight truncate">{match.teamA?.shortName}</span>
           </div>
-          <span className="font-mono font-black text-xl sm:text-2xl text-primary animate-score-pop drop-shadow-glow text-right whitespace-nowrap">
+          <span className="font-mono font-bold text-xl sm:text-2xl text-primary animate-score-pop text-right whitespace-nowrap">
             {match.scoreA}
           </span>
         </div>
         <div className="flex items-center justify-between group-hover:translate-x-1 transition-transform delay-75 gap-4">
           <div className="flex items-center gap-4 flex-1 min-w-0">
-            <span className="text-4xl filter drop-shadow-lg shrink-0">{match.teamB?.logo}</span>
-            <span className="font-bold text-lg tracking-tight truncate">{match.teamB?.shortName}</span>
+            <span className="text-4xl filter drop-shadow-md shrink-0">{match.teamB?.logo}</span>
+            <span className="font-semibold text-lg tracking-tight truncate">{match.teamB?.shortName}</span>
           </div>
-          <span className="font-mono font-black text-xl sm:text-2xl text-primary drop-shadow-glow text-right whitespace-nowrap">
+          <span className="font-mono font-bold text-xl sm:text-2xl text-primary text-right whitespace-nowrap">
             {match.scoreB}
           </span>
         </div>
@@ -123,7 +123,7 @@ const Index = () => {
     return (
       <div
         onClick={() => navigate(`/match/${match.id}`)}
-        className="card-glass rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] cursor-pointer animate-slide-up relative overflow-hidden"
+        className="card-glass rounded-xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer animate-slide-up relative overflow-hidden"
       >
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-bl-full pointer-events-none" />
 
@@ -145,9 +145,9 @@ const Index = () => {
               ) : (
                 <span className="text-4xl shrink-0">{isCricket ? "🏏" : "🏟️"}</span>
               )}
-              <span className="font-bold text-lg tracking-tight truncate">{match.homeTeam}</span>
+              <span className="font-semibold text-lg tracking-tight truncate">{match.homeTeam}</span>
             </div>
-            <span className="font-mono font-black text-xl sm:text-2xl text-primary animate-score-pop drop-shadow-glow text-right whitespace-nowrap">
+            <span className="font-mono font-bold text-xl sm:text-2xl text-primary animate-score-pop text-right whitespace-nowrap">
               {match.homeScore}
             </span>
           </div>
@@ -158,9 +158,9 @@ const Index = () => {
               ) : (
                 <span className="text-4xl shrink-0">{isCricket ? "🏏" : "🏟️"}</span>
               )}
-              <span className="font-bold text-lg tracking-tight truncate">{match.awayTeam}</span>
+              <span className="font-semibold text-lg tracking-tight truncate">{match.awayTeam}</span>
             </div>
-            <span className="font-mono font-black text-xl sm:text-2xl text-primary drop-shadow-glow text-right whitespace-nowrap">
+            <span className="font-mono font-bold text-xl sm:text-2xl text-primary text-right whitespace-nowrap">
               {match.awayScore}
             </span>
           </div>
@@ -223,8 +223,8 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <main className="container py-8 space-y-12">
         {/* Dynamic Hero Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-background to-background p-8 border border-primary/20">
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl opacity-50 animate-pulse" />
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-card to-background p-8 border border-border shadow-sm">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl opacity-50 pointer-events-none" />
 
           <div className="relative z-10 space-y-4">
             <div className="flex items-center gap-3">
@@ -240,8 +240,8 @@ const Index = () => {
               </span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground via-foreground/90 to-foreground/50">
-              GAME TIME
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
+              Game Time
             </h1>
             <p className="text-xl text-muted-foreground max-w-lg">
               Experience the pulse of the game. Real-time scores and updates from around the globe.
@@ -268,23 +268,14 @@ const Index = () => {
           </div>
 
           {!hasLiveMatches ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center space-y-6">
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-                <Trophy className="w-24 h-24 text-muted-foreground/20 relative z-10" />
+            <div className="text-center py-20 bg-card/30 rounded-3xl border border-white/5 mx-auto max-w-2xl">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 mb-4">
+                <Trophy className="w-8 h-8 text-muted-foreground" />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-foreground">No Live Matches</h3>
-                <p className="text-muted-foreground max-w-xs mx-auto">
-                  The arena is quiet right now. Check "Upcoming" to see what's next on the schedule.
-                </p>
-              </div>
-              <button
-                onClick={() => navigate('/matches')}
-                className="px-6 py-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground rounded-full font-medium transition-colors border border-border"
-              >
-                View Upcoming Matches
-              </button>
+              <h3 className="text-xl font-bold mb-2">No Live Matches</h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                The arena is quiet right now. Check back later or browse upcoming matches below.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -301,6 +292,35 @@ const Index = () => {
                 .map((match) => (
                   <ExternalMatchCard key={match.id} match={match} />
                 ))}
+            </div>
+          )}
+        </div>
+
+        {/* Upcoming Matches */}
+        <div className="space-y-6 animate-slide-up delay-100">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Clock className="w-6 h-6 text-primary" />
+              Upcoming Matches
+            </h2>
+            <button onClick={() => navigate('/matches')} className="text-sm text-primary hover:underline">
+              View Schedule
+            </button>
+          </div>
+
+          {upcomingMatches.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground bg-secondary/10 rounded-xl">
+              <p>No upcoming matches scheduled.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {upcomingMatches.map((match: any) => (
+                match.source === 'cricapi' || match.source === 'thesportsdb' ? (
+                  <ExternalMatchCard key={match.id} match={match} />
+                ) : (
+                  <MatchCard key={match._id} match={match} />
+                )
+              ))}
             </div>
           )}
         </div>

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { playerAPI } from "@/api/endpoints";
 import { Button } from "@/components/ui/button";
@@ -30,10 +31,18 @@ const POPULAR_PLAYERS = [
 ];
 
 const PlayerStats = () => {
-    const [query, setQuery] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [query, setQuery] = useState(searchParams.get("name") || "");
     const [loading, setLoading] = useState(false);
     const [player, setPlayer] = useState<PlayerData | null>(null);
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        const nameParam = searchParams.get("name");
+        if (nameParam) {
+            searchPlayer(nameParam);
+        }
+    }, [searchParams]);
 
     const searchPlayer = async (name: string) => {
         if (!name.trim()) return;

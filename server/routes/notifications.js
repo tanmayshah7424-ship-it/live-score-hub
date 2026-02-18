@@ -9,7 +9,11 @@ router.get('/', auth, ctrl.getUserNotifications);
 router.get('/unread-count', auth, ctrl.getUnreadCount);
 
 // Mark as read
+// Mark as read
 router.patch('/:id/read', auth, ctrl.markAsRead);
+
+// Delete notification
+router.delete('/:id', auth, ctrl.deleteNotification);
 
 // Send notifications (role-based)
 router.post('/system', auth, superadmin, ctrl.sendSystemNotification);

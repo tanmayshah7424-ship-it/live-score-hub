@@ -6,7 +6,8 @@ const connectDB = require('./config/db');
 const { initSocket } = require('./socket');
 const errorHandler = require('./middleware/errorHandler');
 const sportsDbService = require('./services/sportsDbService');
-const cricApiService = require('./services/cricApiService');
+const cricApiService = require('./services/rapidCricketService'); // Using RapidAPI service
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
@@ -17,6 +18,13 @@ initSocket(server);
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+    // API Routes are defined below, so they take precedence
+}
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -30,9 +38,17 @@ app.use('/api/live', require('./routes/live'));
 app.use('/api/player', require('./routes/player'));
 app.use('/api/cricapi', require('./routes/cricApi'));
 app.use('/api/system', require('./routes/system'));
+app.use('/api/search', require('./routes/search'));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date() }));
+
+// Catch-all for client-side routing in production
+if (process.env.NODE_ENV === 'production') {
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+    });
+}
 
 // Error handler
 app.use(errorHandler);
@@ -69,7 +85,7 @@ const ensureSuperadmin = async () => {
 const start = async () => {
     await connectDB();
     await ensureSuperadmin();
-    server.listen(PORT, () => {
+    server.listen(PORT, '0.0.0.0', () => {
         console.log(`🚀 Server running on port ${PORT}`);
         console.log(`📡 Socket.IO ready`);
         sportsDbService.start();

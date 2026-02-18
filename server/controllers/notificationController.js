@@ -7,11 +7,16 @@ exports.getUserNotifications = async (req, res, next) => {
     try {
         const userId = req.user._id;
 
-        // Get user-specific and broadcast notifications
+        // Get user-specific and broadcast notifications, excluding deleted ones
         const notifications = await Notification.find({
-            $or: [
-                { userId: userId },
-                { broadcast: true }
+            $and: [
+                {
+                    $or: [
+                        { userId: userId },
+                        { broadcast: true }
+                    ]
+                },
+                { deletedBy: { $ne: userId } }
             ]
         })
             .populate('sender', 'name email')
@@ -45,7 +50,8 @@ exports.getUnreadCount = async (req, res, next) => {
                         { broadcast: true }
                     ]
                 },
-                { readBy: { $ne: userId } }
+                { readBy: { $ne: userId } },
+                { deletedBy: { $ne: userId } }
             ]
         });
 
@@ -78,6 +84,29 @@ exports.markAsRead = async (req, res, next) => {
         }
 
         res.json({ message: 'Notification marked as read' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Delete (hide) notification for user
+exports.deleteNotification = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user._id;
+
+        const notification = await Notification.findById(id);
+        if (!notification) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+
+        // Add user to deletedBy array if not already present
+        if (!notification.deletedBy.includes(userId)) {
+            notification.deletedBy.push(userId);
+            await notification.save();
+        }
+
+        res.json({ message: 'Notification deleted' });
     } catch (error) {
         next(error);
     }

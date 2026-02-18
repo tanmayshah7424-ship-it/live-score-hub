@@ -24,9 +24,9 @@ export function MatchCard({ match, isFav, onToggleFav }: MatchCardProps) {
     <div
       onClick={() => navigate(`/match/${match.id}`)}
       className={cn(
-        "card-glass rounded-lg p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:glow border-l-4 animate-slide-up",
+        "card-glass rounded-xl p-4 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg border-l-4 animate-slide-up",
         sportColors[match.sport] || "border-l-primary",
-        match.status === "live" && "ring-1 ring-live/20"
+        match.status === "live" && "ring-1 ring-live/20 bg-live/5"
       )}
     >
       <div className="flex items-center justify-between mb-3">
@@ -47,7 +47,7 @@ export function MatchCard({ match, isFav, onToggleFav }: MatchCardProps) {
             )}
             <span className="font-semibold text-lg">{match.teamA.shortName}</span>
           </div>
-          <span className={cn("font-mono font-bold text-2xl", match.status === "live" && "text-primary animate-pulse")}>
+          <span className={cn("font-mono font-bold text-xl tracking-tight", match.status === "live" && "text-primary animate-pulse")}>
             {match.scoreA}
           </span>
         </div>
@@ -61,7 +61,7 @@ export function MatchCard({ match, isFav, onToggleFav }: MatchCardProps) {
             )}
             <span className="font-semibold text-lg">{match.teamB.shortName}</span>
           </div>
-          <span className={cn("font-mono font-bold text-2xl", match.status === "live" && "text-primary animate-pulse")}>
+          <span className={cn("font-mono font-bold text-xl tracking-tight", match.status === "live" && "text-primary animate-pulse")}>
             {match.scoreB}
           </span>
         </div>

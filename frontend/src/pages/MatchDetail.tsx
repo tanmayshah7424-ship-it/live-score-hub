@@ -318,8 +318,15 @@ const MatchDetail = () => {
                             <tr key={i} className="hover:bg-white/5">
                               <td className="px-3 py-2 font-medium">
                                 <span
-                                  onClick={() => b.id && navigate(`/player/${b.id}`)}
-                                  className={b.id ? "cursor-pointer hover:text-primary transition-colors" : ""}
+                                  onClick={() => {
+                                    if (b.id) {
+                                      navigate(`/player/${b.id}`);
+                                    } else {
+                                      // Search by name in Player Stats
+                                      navigate(`/player-stats?name=${encodeURIComponent(b.name)}`);
+                                    }
+                                  }}
+                                  className="cursor-pointer hover:text-primary transition-colors hover:underline"
                                 >
                                   {b.name}
                                 </span>
@@ -358,8 +365,14 @@ const MatchDetail = () => {
                       {teamSquad.players?.map((p: any, i: number) => (
                         <div
                           key={i}
-                          onClick={() => p.id && navigate(`/player/${p.id}`)}
-                          className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${p.id ? "hover:bg-white/5 cursor-pointer group" : ""}`}
+                          onClick={() => {
+                            if (p.id) {
+                              navigate(`/player/${p.id}`);
+                            } else {
+                              navigate(`/player-stats?name=${encodeURIComponent(p.name)}`);
+                            }
+                          }}
+                          className="flex items-center gap-3 p-2 rounded-lg transition-colors hover:bg-white/5 cursor-pointer group"
                         >
                           {p.role === "Captain" && <span className="text-xs bg-yellow-500/10 text-yellow-500 px-1.5 py-0.5 rounded">C</span>}
                           {p.role === "Wicketkeeper" && <span className="text-xs bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded">WK</span>}

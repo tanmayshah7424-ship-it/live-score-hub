@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { liveAPI } from "@/api/endpoints";
+import { playersAPI } from "@/api/endpoints";
 import { ArrowLeft, User, MapPin, Calendar, Activity } from "lucide-react";
 
 const PlayerProfile = () => {
@@ -16,12 +16,9 @@ const PlayerProfile = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const res = await liveAPI.getPlayerInfo(id);
-                if (res.data?.status === "success") {
-                    setPlayer(res.data.data);
-                } else {
-                    setError("Player not found.");
-                }
+                // Use playersAPI which now hits our enhanced controller
+                const res = await playersAPI.getById(id);
+                setPlayer(res.data);
             } catch (err) {
                 console.error(err);
                 setError("Failed to fetch player data.");
@@ -110,6 +107,19 @@ const PlayerProfile = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Biography Section */}
+                {player.biography && (
+                    <div className="card-glass rounded-xl p-6 animate-slide-up delay-75">
+                        <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
+                            <User className="w-5 h-5 text-primary" />
+                            Biography
+                        </h2>
+                        <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+                            <p>{player.biography}</p>
+                        </div>
+                    </div>
+                )}
 
                 {/* Stats Grid */}
                 {player.stats && player.stats.length > 0 ? (

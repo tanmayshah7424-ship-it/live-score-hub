@@ -1,5 +1,5 @@
 const { getCachedMatches: getFootballMatches } = require('../services/sportsDbService');
-const { getCachedMatches: getCricketMatches } = require('../services/cricApiService');
+const { getCachedMatches: getCricketMatches } = require('../services/rapidCricketService');
 
 exports.getLive = async (req, res) => {
     const sport = req.query.sport?.toLowerCase();
