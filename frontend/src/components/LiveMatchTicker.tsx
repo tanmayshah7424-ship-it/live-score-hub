@@ -24,11 +24,7 @@ export function LiveMatchTicker() {
     }, [liveMatches]);
 
     if (!displayMatches || displayMatches.length === 0) {
-        return (
-            <div className="flex-1 flex items-center justify-center overflow-hidden">
-                <p className="text-xs text-muted-foreground">No live matches</p>
-            </div>
-        );
+        return null;
     }
 
     return (
@@ -45,14 +41,14 @@ export function LiveMatchTicker() {
                             <Link
                                 key={`${match._id}-${idx}`}
                                 to={`/match/${match._id}`}
-                                className="flex items-center gap-3 px-4 py-1 rounded-full bg-secondary/50 hover:bg-secondary transition-colors whitespace-nowrap"
+                                className="flex items-center gap-3 px-4 py-1.5 rounded-full bg-background/50 border border-border/50 hover:bg-secondary/80 transition-colors whitespace-nowrap shadow-sm"
                             >
                                 <span className="text-xs font-semibold">{teamAName}</span>
-                                <span className="text-xs font-mono text-green-500">{scoreA}</span>
-                                <span className="text-xs text-muted-foreground">vs</span>
+                                <span className="text-xs font-mono text-primary font-bold">{scoreA}</span>
+                                <span className="text-xs text-muted-foreground">-</span>
                                 <span className="text-xs font-semibold">{teamBName}</span>
-                                <span className="text-xs font-mono text-green-500">{scoreB}</span>
-                                <span className="text-xs text-red-500 animate-pulse">🔴 LIVE</span>
+                                <span className="text-xs font-mono text-primary font-bold">{scoreB}</span>
+                                <span className="text-[10px] text-live animate-pulse font-bold tracking-wider">● LIVE</span>
                             </Link>
                         );
                     })}

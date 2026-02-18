@@ -15,4 +15,7 @@ const matchSchema = new mongoose.Schema({
     minute: { type: String },
 }, { timestamps: true });
 
+// Text index for search
+matchSchema.index({ tournament: 'text', venue: 'text', summary: 'text' });
+
 module.exports = mongoose.model('Match', matchSchema);

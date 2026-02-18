@@ -100,4 +100,25 @@ function start() {
     setInterval(poll, POLL_INTERVAL);
 }
 
-module.exports = { start, getCachedMatches };
+const getPlayerBio = async (name) => {
+    try {
+        const url = `${BASE}/searchplayers.php?p=${encodeURIComponent(name)}`;
+        const data = await fetchJSON(url);
+        if (data.player && data.player.length > 0) {
+            const p = data.player[0];
+            return {
+                bio: p.strDescriptionEN,
+                thumb: p.strThumb,
+                country: p.strNationality,
+                dob: p.dateBorn,
+                sport: p.strSport
+            };
+        }
+        return null;
+    } catch (err) {
+        console.error('SportsDB Player Search Error:', err.message);
+        return null;
+    }
+};
+
+module.exports = { start, getCachedMatches, getPlayerBio };

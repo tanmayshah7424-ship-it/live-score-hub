@@ -7,6 +7,7 @@ import { LiveMatchTicker } from "./LiveMatchTicker";
 import { UserDropdown } from "./UserDropdown";
 import { NotificationPanel } from "./NotificationPanel";
 import { ThemeToggle } from "./ThemeToggle";
+import { GlobalSearch } from "./GlobalSearch";
 
 const navItems = [
   { to: "/", label: "Live", icon: Home, isLive: true },
@@ -24,6 +25,7 @@ export function Header() {
   const hasLiveMatches = liveMatches && liveMatches.length > 0;
 
   return (
+    // Header Component
     <header className="sticky top-0 z-50">
       {/* Top Bar */}
       <div className="h-12 bg-background/80 border-b border-border backdrop-blur-xl sticky top-0 z-50">
@@ -45,9 +47,7 @@ export function Header() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
-            <Link to="/search" className="p-2 rounded-lg hover:bg-secondary transition-colors">
-              <Search className="w-5 h-5 text-muted-foreground" />
-            </Link>
+            <GlobalSearch />
             <ThemeToggle />
             <NotificationPanel />
             <div className="hidden md:block">
@@ -79,14 +79,14 @@ export function Header() {
                   className={cn(
                     "flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 relative",
                     active
-                      ? "bg-green-500/20 text-green-500 border border-green-500/50 shadow-lg shadow-green-500/20"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      ? "bg-primary/10 text-primary font-semibold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4", isLiveTab && "animate-pulse text-green-500")} />
+                  <Icon className={cn("w-4 h-4", isLiveTab && "animate-pulse text-live")} />
                   {item.label}
                   {isLiveTab && (
-                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                    <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-live rounded-full animate-pulse ring-2 ring-background"></span>
                   )}
                 </Link>
               );
@@ -119,12 +119,12 @@ export function Header() {
                     "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
                     active
                       ? "bg-primary/10 text-primary font-bold"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
                   )}
                 >
                   <Icon className={cn("w-5 h-5", isLiveTab && "animate-pulse text-live")} />
                   {item.label}
-                  {isLiveTab && <span className="ml-auto text-xs text-live animate-pulse font-bold">🔴 LIVE</span>}
+                  {isLiveTab && <span className="ml-auto text-xs text-live animate-pulse font-bold">● LIVE</span>}
                 </Link>
               );
             })}

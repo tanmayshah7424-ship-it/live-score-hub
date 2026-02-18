@@ -8,18 +8,62 @@ export const useMatches = () => {
     const { socket } = useSocket();
 
     const fetchMatches = async () => {
-        const [live, upcoming, completed, external] = await Promise.all([
+        const [live, upcoming, completed, external, cricApiCurrent, cricApiUpcoming] = await Promise.all([
             matchesAPI.getLive().catch(() => ({ data: [] })),
             matchesAPI.getUpcoming().catch(() => ({ data: [] })),
             matchesAPI.getAll({ status: "completed" }).catch(() => ({ data: [] })),
             liveAPI.getAll().catch(() => ({ data: [] })),
+            liveAPI.getCricketCurrentMatches().catch(() => ({ data: [] })),
+            liveAPI.getCricketMatchesList().catch(() => ({ data: [] })),
         ]);
+
+        const normalizeMatch = (m: any) => {
+            const teams = m.name.split(" vs ");
+            const homeTeam = teams[0] || "Unknown";
+            const awayTeam = (teams[1] || "").split(",")[0] || "Unknown";
+
+            let homeScore = "-";
+            let awayScore = "-";
+
+            if (m.score && Array.isArray(m.score)) {
+                const homeInn = m.score.find((s: any) => s.inning.includes(homeTeam));
+                const awayInn = m.score.find((s: any) => s.inning.includes(awayTeam));
+                if (homeInn) homeScore = `${homeInn.r}/${homeInn.w} (${homeInn.o})`;
+                if (awayInn) awayScore = `${awayInn.r}/${awayInn.w} (${awayInn.o})`;
+            }
+
+            const homeInfo = m.teamInfo?.find((t: any) => t.name.includes(homeTeam));
+            const awayInfo = m.teamInfo?.find((t: any) => t.name.includes(awayTeam));
+
+            return {
+                id: m.id,
+                sport: "cricket",
+                tournament: m.matchType || "International",
+                status: m.status === "Match not started" ? "upcoming" : m.status.toLowerCase(), // Normalize status
+                venue: m.venue,
+                date: new Date(m.dateTimeGMT).toLocaleDateString(),
+                time: new Date(m.dateTimeGMT).toLocaleTimeString(),
+                homeTeam,
+                awayTeam,
+                homeScore,
+                awayScore,
+                homeBadge: homeInfo?.img || "",
+                awayBadge: awayInfo?.img || "",
+                source: "cricapi"
+            };
+        };
+
+        const currentNormalized = (cricApiCurrent.data || []).map(normalizeMatch);
+        // Filter upcoming to avoid duplicates if they appear in both lists (though unlikely with this API structure)
+        const upcomingNormalized = (cricApiUpcoming.data || [])
+            .map(normalizeMatch)
+            .filter((m: any) => m.status === 'upcoming' || m.status.includes('not started'));
 
         return {
             live: live.data,
             upcoming: upcoming.data,
             completed: completed.data,
-            external: external.data,
+            external: [...external.data, ...currentNormalized, ...upcomingNormalized],
         };
     };
 

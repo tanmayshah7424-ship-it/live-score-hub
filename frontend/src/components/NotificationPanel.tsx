@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, X } from "lucide-react";
+import { Bell, X, Trash2 } from "lucide-react";
 import { notificationsAPI } from "@/api/endpoints";
 import { useSocket } from "@/contexts/SocketContext";
 import { useToast } from "@/hooks/use-toast";
@@ -14,17 +14,25 @@ interface Notification {
     createdAt: string;
 }
 
+import { useAuth } from "@/contexts/AuthContext";
+
 export function NotificationPanel() {
     const [isOpen, setIsOpen] = useState(false);
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const { socket } = useSocket();
     const { toast } = useToast();
+    const { user } = useAuth();
 
     useEffect(() => {
-        loadNotifications();
-        loadUnreadCount();
-    }, []);
+        if (user) {
+            loadNotifications();
+            loadUnreadCount();
+        } else {
+            setNotifications([]);
+            setUnreadCount(0);
+        }
+    }, [user]);
 
     useEffect(() => {
         if (!socket) return;
@@ -72,6 +80,20 @@ export function NotificationPanel() {
             console.error('Failed to mark as read:', error);
         }
     };
+
+    const deleteNotification = async (id: string) => {
+        try {
+            await notificationsAPI.delete(id);
+            // Optimistic update
+            setNotifications(prev => prev.filter(n => n._id !== id));
+            loadUnreadCount();
+            toast({ description: "Notification deleted" });
+        } catch (error) {
+            console.error('Failed to delete notification:', error);
+        }
+    };
+
+    if (!user) return null;
 
     return (
         <div className="relative">
@@ -134,14 +156,23 @@ export function NotificationPanel() {
                                                     })}
                                                 </p>
                                             </div>
-                                            {!notif.read && (
+                                            <div className="flex flex-col gap-2 items-end">
                                                 <button
-                                                    onClick={() => markAsRead(notif._id)}
-                                                    className="text-xs text-green-500 hover:underline"
+                                                    onClick={() => deleteNotification(notif._id)}
+                                                    className="text-muted-foreground hover:text-red-500 transition-colors"
+                                                    title="Delete"
                                                 >
-                                                    Mark read
+                                                    <Trash2 className="w-4 h-4" />
                                                 </button>
-                                            )}
+                                                {!notif.read && (
+                                                    <button
+                                                        onClick={() => markAsRead(notif._id)}
+                                                        className="text-xs text-green-500 hover:underline"
+                                                    >
+                                                        Mark read
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 ))

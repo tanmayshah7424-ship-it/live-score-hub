@@ -14,6 +14,7 @@ import Teams from "./pages/Teams";
 import History from "./pages/History";
 import Favorites from "./pages/Favorites";
 import SearchPage from "./pages/SearchPage";
+import TeamProfile from "./pages/TeamProfile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -33,6 +34,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ManageAdmins from "./pages/admin/ManageAdmins";
 import SystemSettings from "./pages/admin/SystemSettings";
+import CricketDemo from "./pages/CricketDemo";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +53,7 @@ const App = () => (
                   <Route path="/match/:id" element={<MatchDetail />} />
                   <Route path="/matches" element={<Matches />} />
                   <Route path="/teams" element={<Teams />} />
+                  <Route path="/team/:id" element={<TeamProfile />} />
                   <Route path="/search" element={<SearchPage />} />
                   <Route path="/player-stats" element={<PlayerStats />} />
                   <Route path="/player/:id" element={<PlayerProfile />} />
@@ -59,6 +62,7 @@ const App = () => (
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password/:token" element={<ResetPassword />} />
                   <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                  <Route path="/cricket-demo" element={<CricketDemo />} />
 
                   {/* Protected Routes */}
                   <Route

@@ -1,71 +1,26 @@
-const router = require('express').Router();
-const cricApi = require('../services/cricApiService');
+const express = require('express');
+const router = express.Router();
+const cricApiController = require('../controllers/cricApiController');
 
-// Get Match Info
-router.get('/match/:id/info', async (req, res) => {
-    try {
-        const data = await cricApi.getMatchInfo(req.params.id);
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Countries
+router.get('/countries', cricApiController.getCountries);
 
-// Get Scorecard
-router.get('/match/:id/scorecard', async (req, res) => {
-    try {
-        const data = await cricApi.getScorecard(req.params.id);
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Series
+router.get('/series', cricApiController.getSeries);
+router.get('/series_info', cricApiController.getSeriesInfo);
+router.get('/series_squad', cricApiController.getSeriesSquad);
 
-// Get Squad
-router.get('/match/:id/squad', async (req, res) => {
-    try {
-        const data = await cricApi.getSquad(req.params.id);
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Matches
+router.get('/matches', cricApiController.getMatches);
+router.get('/currentMatches', cricApiController.getCurrentMatches);
+router.get('/match_info', cricApiController.getMatchInfo);
+router.get('/match_squad', cricApiController.getMatchSquad);
+router.get('/match_scorecard', cricApiController.getMatchScorecard);
+router.get('/match_points', cricApiController.getMatchPoints);
+router.get('/cricScore', cricApiController.getCricScore);
 
-// Get Player Info
-router.get('/player/:id', async (req, res) => {
-    try {
-        const data = await cricApi.getPlayerInfo(req.params.id);
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// Get Series
-router.get('/series', async (req, res) => {
-    try {
-        const offset = req.query.offset || 0;
-        const data = await cricApi.getSeries(offset);
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// Get Countries
-router.get('/countries', async (req, res) => {
-    try {
-        const offset = req.query.offset || 0;
-        const data = await cricApi.getCountries(offset);
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// Debug Cache
-router.get('/debug', (req, res) => {
-    res.json(cricApi.getCachedMatches());
-});
+// Players
+router.get('/players', cricApiController.getPlayers);
+router.get('/players_info', cricApiController.getPlayerInfo);
 
 module.exports = router;
