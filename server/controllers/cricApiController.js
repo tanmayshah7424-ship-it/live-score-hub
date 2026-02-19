@@ -1,10 +1,17 @@
-const cricApiComService = require('../services/cricApiComService');
+const rapidCricketService = require('../services/rapidCricketService');
 
 // Helper to handle API responses
 const handleResponse = async (res, promise) => {
     try {
-        const data = await promise;
-        res.json({ status: 'success', data: data });
+        const result = await promise;
+        // rapidCricketService returns { status, data } objects
+        if (result && result.status === 'success') {
+            res.json({ status: 'success', data: result.data });
+        } else if (Array.isArray(result)) {
+            res.json({ status: 'success', data: result });
+        } else {
+            res.json({ status: 'success', data: result });
+        }
     } catch (error) {
         console.error('Controller Error:', error);
         res.status(500).json({ status: 'error', message: error.message });
@@ -12,20 +19,29 @@ const handleResponse = async (res, promise) => {
 };
 
 module.exports = {
-    getCountries: (req, res) => handleResponse(res, cricApiComService.getCountries()),
+    getCountries: (req, res) => handleResponse(res, rapidCricketService.getCountries()),
 
-    getSeries: (req, res) => handleResponse(res, cricApiComService.getSeries(req.query.search)),
-    getSeriesInfo: (req, res) => handleResponse(res, cricApiComService.getSeriesInfo(req.query.id)),
-    getSeriesSquad: (req, res) => handleResponse(res, cricApiComService.getSeriesSquad(req.query.id)),
+    getSeries: (req, res) => handleResponse(res, rapidCricketService.getSeries()),
+    getSeriesInfo: (req, res) => res.json({ status: 'success', data: null }),
+    getSeriesSquad: (req, res) => res.json({ status: 'success', data: [] }),
 
-    getMatches: (req, res) => handleResponse(res, cricApiComService.getMatches()),
-    getCurrentMatches: (req, res) => handleResponse(res, cricApiComService.getCurrentMatches()),
-    getMatchInfo: (req, res) => handleResponse(res, cricApiComService.getMatchInfo(req.query.id)),
-    getMatchSquad: (req, res) => handleResponse(res, cricApiComService.getMatchSquad(req.query.id)),
-    getMatchScorecard: (req, res) => handleResponse(res, cricApiComService.getMatchScorecard(req.query.id)),
-    getMatchPoints: (req, res) => handleResponse(res, cricApiComService.getMatchPoints(req.query.id)),
-    getCricScore: (req, res) => handleResponse(res, cricApiComService.getCricScore(req.query.id)),
+    getMatches: (req, res) => {
+        const matches = rapidCricketService.getCachedMatches();
+        res.json({ status: 'success', data: matches });
+    },
+    getCurrentMatches: (req, res) => {
+        const matches = rapidCricketService.getCachedMatches().filter(m => m.status === 'live');
+        res.json({ status: 'success', data: matches });
+    },
+    getMatchInfo: (req, res) => handleResponse(res, rapidCricketService.getMatchInfo(req.query.id)),
+    getMatchSquad: (req, res) => handleResponse(res, rapidCricketService.getSquad(req.query.id)),
+    getMatchScorecard: (req, res) => handleResponse(res, rapidCricketService.getScorecard(req.query.id)),
+    getMatchPoints: (req, res) => res.json({ status: 'success', data: null }),
+    getCricScore: (req, res) => {
+        const match = rapidCricketService.getCachedMatches().find(m => m.id === req.query.id);
+        res.json({ status: 'success', data: match || null });
+    },
 
-    getPlayers: (req, res) => handleResponse(res, cricApiComService.getPlayers(req.query.search)),
-    getPlayerInfo: (req, res) => handleResponse(res, cricApiComService.getPlayerInfo(req.query.id)),
+    getPlayers: (req, res) => handleResponse(res, rapidCricketService.getCricketPlayers()),
+    getPlayerInfo: (req, res) => handleResponse(res, rapidCricketService.getPlayerInfo(req.query.id)),
 };
