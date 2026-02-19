@@ -15,9 +15,10 @@ COPY . .
 # Expose port (adjust if your server uses a different port)
 EXPOSE 5000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:5000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+# Health check (checks the API health endpoint).
+# Waits for response end and exits 0 on 200, 1 otherwise.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5000/api/health', (r) => { if (r.statusCode !== 200) { process.exit(1); } r.on('data', ()=>{}); r.on('end', ()=>process.exit(0)); }).on('error', ()=>process.exit(1))"
 
 # Start the server
 CMD ["npm", "start"]
