@@ -20,11 +20,15 @@ initSocket(server);
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'] }));
 app.use(express.json());
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-    // API Routes are defined below, so they take precedence
+// Note: In Docker, frontend is served separately by nginx
+// This code only runs in non-Docker development mode
+if (process.env.NODE_ENV === 'production' && process.env.SERVE_FRONTEND === 'true') {
+    const frontendPath = path.join(__dirname, '../frontend/dist');
+    try {
+        app.use(express.static(frontendPath));
+    } catch (err) {
+        console.warn('Frontend dist folder not found, skipping static file serving');
+    }
 }
 
 // Routes
@@ -46,10 +50,16 @@ app.use('/api/cricbuzz', require('./routes/cricbuzz'));
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
-// Catch-all for client-side routing in production
-if (process.env.NODE_ENV === 'production') {
+// Note: In Docker, frontend is served by nginx (separate container)
+// This catch-all only runs if SERVE_FRONTEND is explicitly enabled
+if (process.env.NODE_ENV === 'production' && process.env.SERVE_FRONTEND === 'true') {
     app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+        const frontendPath = path.resolve(__dirname, '../frontend', 'dist', 'index.html');
+        try {
+            res.sendFile(frontendPath);
+        } catch (err) {
+            res.status(404).json({ error: 'Frontend not found' });
+        }
     });
 }
 
