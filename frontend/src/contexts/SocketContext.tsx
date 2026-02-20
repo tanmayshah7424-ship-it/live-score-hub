@@ -14,9 +14,10 @@ const SocketContext = createContext<SocketContextType>({ socket: null, connected
 // - In production build (Render): connect to same origin (wss:// matches the https:// page)
 // - In dev: connect directly to backend port 5001 on the same LAN hostname
 const SOCKET_URL = (() => {
-    if (import.meta.env.VITE_SOCKET_URL) return import.meta.env.VITE_SOCKET_URL;
-    if (import.meta.env.PROD) return window.location.origin; // e.g. https://scorehub-live.onrender.com
-    // Dev: use ws:// with explicit port 5001
+    const envUrl = import.meta.env.VITE_SOCKET_URL;
+    if (envUrl && envUrl.length > 0) return envUrl; // explicit override
+    if (import.meta.env.PROD) return window.location.origin; // Render: same host, wss://
+    // Dev: connect directly to backend port 5001 on the same LAN hostname
     const devProto = window.location.protocol === 'https:' ? 'https:' : 'http:';
     return `${devProto}//${window.location.hostname}:5001`;
 })();
