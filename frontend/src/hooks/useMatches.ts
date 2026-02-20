@@ -18,12 +18,14 @@ export const useMatches = () => {
         ]);
 
         // Handle wrapped response: { status, data: [...] } OR plain array
-        const externalRaw = allExternal?.data;
-        const externalList: any[] = Array.isArray(externalRaw)
-            ? externalRaw
-            : Array.isArray(externalRaw?.data)
-                ? externalRaw.data
-                : [];
+        // Guard against null / undefined / non-array at every level
+        const externalRaw = allExternal?.data ?? null;
+        let externalList: any[] = [];
+        if (Array.isArray(externalRaw)) {
+            externalList = externalRaw;
+        } else if (externalRaw && Array.isArray(externalRaw.data)) {
+            externalList = externalRaw.data;
+        }
 
         // Deduplicate by id
         const seen = new Set<string>();

@@ -30,7 +30,7 @@ services:
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongo:27017/scorehub}
       - JWT_SECRET=${JWT_SECRET:-scorehub_jwt_secret_key_2026_production}
       - SPORTSDB_API_KEY=${SPORTSDB_API_KEY:-3}
-      - CRICAPI_KEY=${CRICAPI_KEY:-b825cbb1-b220-48bf-854c-2ee543548215}
+      - CRICAPI_KEY=${CRICAPI_KEY:-ef7c296a-468c-4968-9dfb-f4c8101d5320}
       - EMAIL_USER=${EMAIL_USER:-your-email@gmail.com}
       - EMAIL_PASS=${EMAIL_PASS:-your-app-password-here}
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost}

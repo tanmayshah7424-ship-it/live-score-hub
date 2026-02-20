@@ -72,7 +72,7 @@ async function poll() {
             const newScoreKey = `${match.homeScore}-${match.awayScore}-${match.status}`;
             const oldScoreKey = previousScores.get(key);
 
-            if (oldScoreKey && oldScoreKey !== newScoreKey) {
+            if (io && oldScoreKey && oldScoreKey !== newScoreKey) {
                 // Score or status changed — emit real-time update
                 io.emit('score:update', match);
                 console.log(`⚽ Score update: ${match.homeTeam} ${match.homeScore} - ${match.awayScore} ${match.awayTeam}`);

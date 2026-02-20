@@ -19,7 +19,7 @@ services:
       - key: MONGODB_URI
         sync: false                  # ⚠️  Set this manually in Render dashboard
       - key: CRICAPI_KEY
-        value: b825cbb1-b220-48bf-854c-2ee543548215
+        value: ef7c296a-468c-4968-9dfb-f4c8101d5320
       - key: SPORTSDB_API_KEY
         value: 3
       - key: RAPIDAPI_KEY

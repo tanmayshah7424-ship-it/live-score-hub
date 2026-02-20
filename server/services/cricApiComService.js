@@ -1,6 +1,6 @@
 const https = require('https');
 
-const API_KEY = 'b825cbb1-b220-48bf-854c-2ee543548215';
+const API_KEY = process.env.CRICAPI_KEY || 'ef7c296a-468c-4968-9dfb-f4c8101d5320';
 const HOST = 'api.cricapi.com';
 
 const cache = {};
