@@ -7,6 +7,7 @@ const { initSocket } = require('./socket');
 const errorHandler = require('./middleware/errorHandler');
 const sportsDbService = require('./services/sportsDbService');
 const cricApiService = require('./services/rapidCricketService'); // Using RapidAPI service
+const espnPollingService = require('./services/espnPollingService');
 const path = require('path');
 
 const app = express();
@@ -43,6 +44,8 @@ app.use('/api/player', require('./routes/player'));
 app.use('/api/cricapi', require('./routes/cricApi'));
 app.use('/api/system', require('./routes/system'));
 app.use('/api/search', require('./routes/search'));
+app.use('/api/espn', require('./routes/espn'));
+app.use('/api/cricbuzz', require('./routes/cricbuzz'));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date() }));
@@ -63,7 +66,7 @@ if (process.env.NODE_ENV === 'production' && process.env.SERVE_FRONTEND === 'tru
 // Error handler
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 const ensureSuperadmin = async () => {
     const User = require('./models/User');
@@ -93,15 +96,28 @@ const ensureSuperadmin = async () => {
 };
 
 const start = async () => {
-    await connectDB();
-    await ensureSuperadmin();
-    server.listen(PORT, '0.0.0.0', () => {
-        console.log(`🚀 Server running on port ${PORT}`);
-        console.log(`📡 Socket.IO ready`);
-        sportsDbService.start();
-        cricApiService.start();
-    });
+    try {
+        await connectDB();
+        await ensureSuperadmin();
+        // Only listen if not in test mode, or if explicitly called
+        if (process.env.NODE_ENV !== 'test') {
+            server.listen(PORT, '0.0.0.0', () => {
+                console.log(`🚀 Server running on port ${PORT}`);
+                console.log(`📡 Socket.IO ready`);
+                sportsDbService.start();
+                cricApiService.start();
+                // espnPollingService.start(); // Disabled temporarily for stability
+            });
+        }
+    } catch (err) {
+        console.error("Server startup error:", err);
+    }
 };
 
-start();
+// Only auto-start if not imported (main module)
+if (require.main === module) {
+    start();
+}
+
+module.exports = { app, server, start, connectDB };
 

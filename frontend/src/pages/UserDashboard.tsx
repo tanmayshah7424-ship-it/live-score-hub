@@ -5,6 +5,7 @@ import { favoritesAPI, notificationsAPI, matchesAPI } from "@/api/endpoints";
 import { useSocket } from "@/contexts/SocketContext";
 import { useNavigate } from "react-router-dom";
 import { User, Heart, Bell, Activity, Trophy } from "lucide-react";
+import { CricbuzzWidget } from "@/components/CricbuzzWidget";
 
 const UserDashboard = () => {
     const { user } = useAuth();
@@ -99,6 +100,12 @@ const UserDashboard = () => {
                         <p className="text-2xl font-bold font-mono">{notifications.filter((n) => !n.read).length}</p>
                         <p className="text-xs text-muted-foreground">Unread</p>
                     </div>
+                </div>
+
+                {/* Cricbuzz Widgets */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <CricbuzzWidget type="recent" className="card-glass border-0" />
+                    <CricbuzzWidget type="live" className="card-glass border-0" />
                 </div>
 
                 {/* Notifications */}

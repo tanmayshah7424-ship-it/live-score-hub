@@ -5,7 +5,11 @@ const Match = require('../models/Match');
 
 exports.getAll = async (req, res, next) => {
     try {
-        const teams = await Team.find().sort({ name: 1 });
+        const { sport } = req.query;
+        const filter = {};
+        if (sport) filter.sport = sport;
+
+        const teams = await Team.find(filter).sort({ name: 1 });
         res.json(teams);
     } catch (error) {
         next(error);

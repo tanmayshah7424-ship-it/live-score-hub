@@ -308,21 +308,26 @@ const Index = () => {
             </button>
           </div>
 
-          {upcomingMatches.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground bg-secondary/10 rounded-xl">
-              <p>No upcoming matches scheduled.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {upcomingMatches.map((match: any) => (
-                match.source === 'cricapi' || match.source === 'thesportsdb' ? (
-                  <ExternalMatchCard key={match.id} match={match} />
-                ) : (
-                  <MatchCard key={match._id} match={match} />
-                )
-              ))}
-            </div>
-          )}
+          {(() => {
+            // Merge DB upcoming + external upcoming (cricket/football)
+            const externalUpcoming = externalMatches.filter((m: any) => m.status === 'upcoming');
+            const allUpcoming = [...upcomingMatches, ...externalUpcoming];
+            return allUpcoming.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground bg-secondary/10 rounded-xl">
+                <p>No upcoming matches scheduled.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {allUpcoming.map((match: any) => (
+                  match.source === 'cricapi' || match.source === 'thesportsdb' ? (
+                    <ExternalMatchCard key={match.id} match={match} />
+                  ) : (
+                    <MatchCard key={match._id} match={match} />
+                  )
+                ))}
+              </div>
+            );
+          })()}
         </div>
       </main>
     </div>

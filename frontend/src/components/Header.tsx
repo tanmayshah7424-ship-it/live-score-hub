@@ -2,6 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Home, Trophy, Users, History, Star, Search, Menu, X, Target } from "lucide-react";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/api/axios";
 import { useSocket } from "@/contexts/SocketContext";
 import { LiveMatchTicker } from "./LiveMatchTicker";
 import { UserDropdown } from "./UserDropdown";
@@ -12,6 +14,7 @@ import { GlobalSearch } from "./GlobalSearch";
 const navItems = [
   { to: "/", label: "Live", icon: Home, isLive: true },
   { to: "/matches", label: "Matches", icon: Trophy },
+  { to: "/live-cricket", label: "🏏 Cricket", icon: null, isCricket: true },
   { to: "/teams", label: "Teams", icon: Users },
   { to: "/history", label: "History", icon: History },
   { to: "/favorites", label: "Favorites", icon: Star },
@@ -32,9 +35,11 @@ export function Header() {
         <div className="container h-full flex items-center justify-between gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-              <span className="text-primary-foreground font-bold text-sm">SC</span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="Code Strikers"
+              className="h-10 w-auto object-contain drop-shadow-md"
+            />
             <span className="font-bold text-lg hidden sm:inline text-foreground">
               Score<span className="text-primary">Hub</span>
             </span>
@@ -83,7 +88,7 @@ export function Header() {
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4", isLiveTab && "animate-pulse text-live")} />
+                  {Icon && <Icon className={cn("w-4 h-4", isLiveTab && "animate-pulse text-live")} />}
                   {item.label}
                   {isLiveTab && (
                     <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-live rounded-full animate-pulse ring-2 ring-background"></span>

@@ -32,7 +32,7 @@ const initSocket = (server) => {
 };
 
 const getIO = () => {
-    if (!io) throw new Error('Socket.IO not initialized');
+    if (!io) return null;
     return io;
 };
 

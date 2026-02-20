@@ -11,8 +11,11 @@ const matchSchema = new mongoose.Schema({
     scoreA: { type: String, default: '-' },
     scoreB: { type: String, default: '-' },
     summary: { type: String, default: '' },
+    name: { type: String }, // For ingestion parity
+    shortName: { type: String }, // For ingestion parity
     overs: { type: String },
     minute: { type: String },
+    espnId: { type: String, unique: true, sparse: true }, // External ID for ingestion
 }, { timestamps: true });
 
 // Text index for search
