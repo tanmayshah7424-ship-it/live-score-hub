@@ -9,7 +9,13 @@ interface SocketContextType {
 
 const SocketContext = createContext<SocketContextType>({ socket: null, connected: false, liveMatches: [] });
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+// Production (Render): frontend + backend on same origin → use window.location.origin
+// Development: connect directly to backend port 5001 so other LAN devices work too
+const SOCKET_URL =
+    import.meta.env.VITE_SOCKET_URL ||
+    (import.meta.env.PROD
+        ? window.location.origin
+        : `${window.location.protocol}//${window.location.hostname}:5001`);
 
 export function SocketProvider({ children }: { children: ReactNode }) {
     const [socket, setSocket] = useState<Socket | null>(null);

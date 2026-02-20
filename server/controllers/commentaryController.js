@@ -14,8 +14,11 @@ exports.create = async (req, res, next) => {
     try {
         const event = await Commentary.create(req.body);
 
-        getIO().emit('commentary:new', event);
-        getIO().to(`match:${event.matchId}`).emit('commentary:new', event);
+        // Emit ONLY to the match room – NOT globally (global + room = duplicate for room members)
+        const io = getIO();
+        if (io) {
+            io.to(`match:${event.matchId}`).emit('commentary:new', event);
+        }
 
         res.status(201).json(event);
     } catch (error) {

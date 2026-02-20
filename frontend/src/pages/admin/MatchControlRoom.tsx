@@ -14,6 +14,7 @@ const MatchControlRoom = () => {
 
     const [scoreForm, setScoreForm] = useState({ scoreA: "", scoreB: "", summary: "", overs: "", minute: "" });
     const [commentaryForm, setCommentaryForm] = useState({ timestamp: "", description: "", type: "general", value: 0 });
+    const [scoreMsg, setScoreMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
 
     const fetchData = async () => {
@@ -38,11 +39,19 @@ const MatchControlRoom = () => {
     const updateScore = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!id) return;
+        setScoreMsg(null);
         try {
             const res = await matchesAPI.updateScore(id, scoreForm);
             setMatch(res.data);
-        } catch (err) {
+            setScoreMsg({ ok: true, text: '✅ Score pushed to all viewers!' });
+        } catch (err: any) {
             console.error(err);
+            const status = err?.response?.status;
+            if (status === 401 || status === 403) {
+                setScoreMsg({ ok: false, text: '❌ Not authorised – please log out and log back in.' });
+            } else {
+                setScoreMsg({ ok: false, text: `❌ Failed: ${err?.response?.data?.message || err.message}` });
+            }
         }
     };
 
@@ -168,6 +177,11 @@ const MatchControlRoom = () => {
                             <Input value={scoreForm.minute} onChange={(e) => setScoreForm({ ...scoreForm, minute: e.target.value })} className="bg-secondary/50" placeholder="72" />
                         </div>
                     </div>
+                    {scoreMsg && (
+                        <p className={`text-sm font-medium px-3 py-2 rounded-lg ${scoreMsg.ok ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
+                            {scoreMsg.text}
+                        </p>
+                    )}
                     <Button type="submit" className="w-full gap-2"><Zap className="w-4 h-4" /> Push Score Update</Button>
                 </form>
 

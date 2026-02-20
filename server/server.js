@@ -16,8 +16,8 @@ const server = http.createServer(app);
 // Init Socket.IO
 initSocket(server);
 
-// Middleware
-app.use(cors());
+// Middleware – allow all origins so other devices on the LAN can connect
+app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'] }));
 app.use(express.json());
 
 // Serve static files in production

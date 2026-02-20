@@ -2,7 +2,21 @@ const Match = require('../models/Match');
 const Team = require('../models/Team');
 const { getIO } = require('../socket');
 
-const populateTeams = (query) => query.populate('teamA', 'name shortName logo sport').populate('teamB', 'name shortName logo sport');
+const populateTeams = (query) =>
+    query
+        .populate('teamA', 'name shortName logo sport')
+        .populate('teamB', 'name shortName logo sport');
+
+// Helper: safely emit on socket without crashing if IO isn't ready
+const safeEmit = (event, data, room) => {
+    const io = getIO();
+    if (!io) {
+        console.warn(`Socket.IO not initialized – "${event}" not emitted`);
+        return;
+    }
+    io.emit(event, data);
+    if (room) io.to(room).emit(event, data);
+};
 
 exports.getAll = async (req, res, next) => {
     try {
@@ -69,8 +83,8 @@ exports.updateScore = async (req, res, next) => {
         );
         if (!match) return res.status(404).json({ message: 'Match not found' });
 
-        getIO().emit('score:update', match);
-        getIO().to(`match:${match._id}`).emit('score:update', match);
+        // Broadcast score update to ALL connected clients + the specific match room
+        safeEmit('score:update', match, `match:${match._id}`);
 
         res.json(match);
     } catch (error) {
@@ -92,8 +106,7 @@ exports.updateStatus = async (req, res, next) => {
             await Team.findByIdAndUpdate(match.teamB._id, { $inc: { matchesPlayed: 1 } });
         }
 
-        getIO().emit('match:status', match);
-        getIO().to(`match:${match._id}`).emit('match:status', match);
+        safeEmit('match:status', match, `match:${match._id}`);
 
         res.json(match);
     } catch (error) {
@@ -140,8 +153,8 @@ exports.getStats = async (req, res, next) => {
 
 exports.getFinished = async (req, res, next) => {
     try {
-        const matches = await populateTeams(Match.find({ 
-            status: { $in: ['finished', 'completed'] } 
+        const matches = await populateTeams(Match.find({
+            status: { $in: ['finished', 'completed'] }
         })).sort({ date: -1 });
         res.json(matches);
     } catch (error) {

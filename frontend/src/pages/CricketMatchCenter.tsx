@@ -61,7 +61,7 @@ const CricketMatchCenter = () => {
         if (!socket) return;
         const handler = (update: any) => { if (update.id === id) refetch(); };
         socket.on("score:update", handler);
-        return () => socket.off("score:update", handler);
+        return () => { socket.off("score:update", handler); };
     }, [socket, id, refetch]);
 
     // Auto-scroll commentary

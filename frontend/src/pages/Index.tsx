@@ -253,7 +253,7 @@ const Index = () => {
         <div className="space-y-8">
           {/* Sport Filter Tabs */}
           <div className="flex bg-secondary/30 p-1.5 rounded-xl border border-border/50 w-fit backdrop-blur-md">
-            {["all", "cricket", "football", "basketball", "tennis"].map((sport) => (
+            {["all", "cricket", "football", "basketball"].map((sport) => (
               <button
                 key={sport}
                 onClick={() => setActiveSport(sport)}

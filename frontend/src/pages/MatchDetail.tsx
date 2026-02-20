@@ -95,7 +95,8 @@ const MatchDetail = () => {
       if (updated._id === id) setLocalMatch(updated);
     });
     socket.on("commentary:new", (event: any) => {
-      if (event.matchId === id) setCommentary((prev) => [event, ...prev]);
+      if (event.matchId === id)
+        setCommentary((prev) => prev.some((c) => c._id === event._id) ? prev : [event, ...prev]);
     });
     socket.on("match:status", (updated: any) => {
       if (updated._id === id) setLocalMatch(updated);

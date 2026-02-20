@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: scorehub-live
+    runtime: node
+    # Build: install all deps + build the React frontend
+    buildCommand: >-
+      npm install &&
+      npm install --prefix server &&
+      npm install --prefix frontend &&
+      npm run build --prefix frontend
+    # Start: run the Express backend (it serves frontend/dist as static files)
+    startCommand: node server/server.js
+    # Render assigns PORT automatically – server.js already reads process.env.PORT
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true          # Render auto-generates a secure secret
+      - key: MONGODB_URI
+        sync: false                  # ⚠️  Set this manually in Render dashboard
+      - key: CRICAPI_KEY
+        value: b825cbb1-b220-48bf-854c-2ee543548215
+      - key: SPORTSDB_API_KEY
+        value: 3
+      - key: RAPIDAPI_KEY
+        sync: false                  # Optional – set if you use RapidAPI cricket
