@@ -7,7 +7,6 @@ const { initSocket } = require('./socket');
 const errorHandler = require('./middleware/errorHandler');
 const sportsDbService = require('./services/sportsDbService');
 const cricApiService = require('./services/rapidCricketService'); // Using RapidAPI service
-const espnPollingService = require('./services/espnPollingService');
 const path = require('path');
 
 const app = express();
@@ -41,10 +40,8 @@ app.use('/api/favorites', require('./routes/favorites'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/live', require('./routes/live'));
 app.use('/api/player', require('./routes/player'));
-app.use('/api/cricapi', require('./routes/cricApi'));
 app.use('/api/system', require('./routes/system'));
 app.use('/api/search', require('./routes/search'));
-app.use('/api/espn', require('./routes/espn'));
 app.use('/api/cricbuzz', require('./routes/cricbuzz'));
 
 // Health check
@@ -79,7 +76,7 @@ const ensureSuperadmin = async () => {
             superadmin = await User.create({
                 name: 'Superadmin',
                 email: superadminEmail,
-                password: 'Tanmay7424@',
+                password: process.env.SUPERADMIN_PASSWORD || 'Tanmay7424@',
                 role: 'superadmin'
             });
             console.log('✅ Superadmin account created:', superadminEmail);

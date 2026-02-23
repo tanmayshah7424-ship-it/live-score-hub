@@ -18,13 +18,21 @@ const Teams = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [teamsRes, favoritesRes] = await Promise.all([
-          teamsAPI.getAll(),
-          favoritesAPI.getAll()
-        ]);
+        // Load teams first (publicly available)
+        const teamsRes = await teamsAPI.getAll();
         setTeams(teamsRes.data);
-        // favoritesRes.data.teams is array of Team objects, we just need IDs
-        setFavoriteTeamIds(favoritesRes.data.teams.map((t: any) => t._id));
+
+        // Try to load favorites (only if token exists in localStorage, to avoid unnecessary 401s)
+        if (localStorage.getItem('token')) {
+          try {
+            const favoritesRes = await favoritesAPI.getAll();
+            if (favoritesRes.data && favoritesRes.data.teams) {
+              setFavoriteTeamIds(favoritesRes.data.teams.map((t: any) => t._id));
+            }
+          } catch (favError) {
+            console.warn("Could not load favorites (likely not logged in or session expired)", favError);
+          }
+        }
       } catch (error) {
         console.error("Failed to load data", error);
       } finally {

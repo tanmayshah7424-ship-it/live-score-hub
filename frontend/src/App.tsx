@@ -34,7 +34,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ManageAdmins from "./pages/admin/ManageAdmins";
 import SystemSettings from "./pages/admin/SystemSettings";
-import CricketDemo from "./pages/CricketDemo";
+
 import LiveCricket from "./pages/LiveCricket";
 import CricketMatchCenter from "./pages/CricketMatchCenter";
 
@@ -64,7 +64,7 @@ const App = () => (
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password/:token" element={<ResetPassword />} />
                   <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-                  <Route path="/cricket-demo" element={<CricketDemo />} />
+
                   <Route path="/live-cricket" element={<LiveCricket />} />
                   <Route path="/live-cricket/:id" element={<CricketMatchCenter />} />
 
